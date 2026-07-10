@@ -1,9 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Facebook, Instagram, Twitter } from 'lucide-react'
 
 export function Footer() {
+  const t = useTranslations('footer')
+
   return (
     <footer className="bg-gray-900 text-gray-100 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -20,11 +23,11 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="font-semibold mb-4">Shop</h4>
+            <h4 className="font-semibold mb-4">{t('shop')}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/shop" className="hover:text-white transition">
-                  All Products
+                  {t('allProducts')}
                 </Link>
               </li>
               <li>
@@ -34,7 +37,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/offers" className="hover:text-white transition">
-                  Offers
+                  {t('offers')}
                 </Link>
               </li>
             </ul>
@@ -42,11 +45,11 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-semibold mb-4">Company</h4>
+            <h4 className="font-semibold mb-4">{t('company')}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/about" className="hover:text-white transition">
-                  About Us
+                  {t('aboutUs')}
                 </Link>
               </li>
               <li>
@@ -56,7 +59,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/faq" className="hover:text-white transition">
-                  FAQ
+                  {t('faq')}
                 </Link>
               </li>
             </ul>
@@ -64,21 +67,21 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
+            <h4 className="font-semibold mb-4">{t('legal')}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="/privacy" className="hover:text-white transition">
-                  Privacy Policy
+                  {t('privacyPolicy')}
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="hover:text-white transition">
-                  Terms & Conditions
+                  {t('terms')}
                 </Link>
               </li>
               <li>
                 <Link href="/refund" className="hover:text-white transition">
-                  Refund Policy
+                  {t('refundPolicy')}
                 </Link>
               </li>
             </ul>
@@ -88,7 +91,7 @@ export function Footer() {
         {/* Social & Copyright */}
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
           <p className="text-gray-400 text-sm">
-            © 2024 SHAH Myanmar Store. All rights reserved.
+            © 2024 SHAH Myanmar Store. {t('allRightsReserved')}.
           </p>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white transition">
