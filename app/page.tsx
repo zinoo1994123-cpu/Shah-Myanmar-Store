@@ -1,39 +1,293 @@
-import Link from 'next/link'
+'use client'
+
 import Image from 'next/image'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Star, Truck, Shield, Zap } from 'lucide-react'
+import { ProductCard } from '@/components/product/ProductCard'
+import { useCart } from '@/hooks/useCart'
+import type { Product } from '@/types'
+
+// Sample hero data
+const HERO_DATA = {
+  title: 'Authentic Myanmar Flavors',
+  subtitle: 'in Malaysia',
+  description: 'Experience the finest premium Myanmar food & grocery products delivered to your doorstep',
+  cta: 'Shop Now',
+}
+
+// Sample featured categories
+const FEATURED_CATEGORIES = [
+  { id: 1, name: 'Spices', icon: '🌶️', color: 'from-red-500 to-orange-500' },
+  { id: 2, name: 'Snacks', icon: '🥜', color: 'from-amber-500 to-yellow-500' },
+  { id: 3, name: 'Beverages', icon: '☕', color: 'from-blue-500 to-cyan-500' },
+  { id: 4, name: 'Rice & Grains', icon: '🌾', color: 'from-green-500 to-emerald-500' },
+]
+
+// Sample featured products
+const FEATURED_PRODUCTS: Product[] = [
+  {
+    id: '1',
+    name: 'Golden Shan Noodles',
+    description: 'Traditional Shan noodles made with authentic Myanmar recipe',
+    price: 15.99,
+    originalPrice: 18.99,
+    image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=500&fit=crop',
+    category: 'Snacks',
+    brand: 'SHAH',
+    stock: 50,
+    sku: 'SHAN001',
+    rating: 4.5,
+    reviews: 120,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    name: 'Myanmar Turmeric Powder',
+    description: 'Pure turmeric powder from Myanmar highlands',
+    price: 8.99,
+    image: 'https://images.unsplash.com/photo-1596040281384-8ee6e34f6a6e?w=500&h=500&fit=crop',
+    category: 'Spices',
+    brand: 'SHAH',
+    stock: 100,
+    sku: 'SPICE001',
+    rating: 4.8,
+    reviews: 89,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '3',
+    name: 'Exotic Myanmar Coffee',
+    description: 'Premium arabica blend roasted to perfection',
+    price: 24.99,
+    originalPrice: 29.99,
+    image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b3f7?w=500&h=500&fit=crop',
+    category: 'Beverages',
+    brand: 'SHAH',
+    stock: 30,
+    sku: 'BEVER001',
+    rating: 4.7,
+    reviews: 156,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '4',
+    name: 'Basmati Rice Premium',
+    description: 'Long grain basmati rice, aromatic and fluffy',
+    price: 12.99,
+    image: 'https://images.unsplash.com/photo-1586080872843-30f219d822c3?w=500&h=500&fit=crop',
+    category: 'Rice & Grains',
+    brand: 'SHAH',
+    stock: 200,
+    sku: 'RICE001',
+    rating: 4.6,
+    reviews: 234,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '5',
+    name: 'Myanmar Fish Sauce',
+    description: 'Authentic Myanmar fish sauce for traditional recipes',
+    price: 6.99,
+    originalPrice: 8.99,
+    image: 'https://images.unsplash.com/photo-1596040281384-8ee6e34f6a6e?w=500&h=500&fit=crop',
+    category: 'Spices',
+    brand: 'SHAH',
+    stock: 75,
+    sku: 'SPICE002',
+    rating: 4.4,
+    reviews: 67,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '6',
+    name: 'Sesame Oil Premium',
+    description: 'Cold-pressed sesame oil for cooking',
+    price: 16.99,
+    image: 'https://images.unsplash.com/photo-1587838220812-9dc6f50f2b2b?w=500&h=500&fit=crop',
+    category: 'Spices',
+    brand: 'SHAH',
+    stock: 45,
+    sku: 'SPICE003',
+    rating: 4.7,
+    reviews: 95,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '7',
+    name: 'Myanmar Peanut Brittle',
+    description: 'Crispy peanut brittle, a favorite snack',
+    price: 9.99,
+    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd5e1d6?w=500&h=500&fit=crop',
+    category: 'Snacks',
+    brand: 'SHAH',
+    stock: 60,
+    sku: 'SNACK001',
+    rating: 4.6,
+    reviews: 112,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '8',
+    name: 'Green Tea Blend',
+    description: 'Traditional Myanmar green tea blend',
+    price: 11.99,
+    originalPrice: 14.99,
+    image: 'https://images.unsplash.com/photo-1597318372441-0cb2d77cfc77?w=500&h=500&fit=crop',
+    category: 'Beverages',
+    brand: 'SHAH',
+    stock: 80,
+    sku: 'BEVER002',
+    rating: 4.5,
+    reviews: 78,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+]
+
+// Feature highlights
+const FEATURE_HIGHLIGHTS = [
+  {
+    icon: Truck,
+    title: 'Fast Delivery',
+    description: 'Free shipping on orders over RM 50',
+  },
+  {
+    icon: Shield,
+    title: '100% Authentic',
+    description: 'All products directly from Myanmar',
+  },
+  {
+    icon: Zap,
+    title: 'Best Prices',
+    description: 'Competitive prices and exclusive deals',
+  },
+]
 
 export default function HomePage() {
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml')] opacity-5" />
+  const { addItem } = useCart()
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900 dark:text-white">
-            Authentic Myanmar Flavors
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-              in Malaysia
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Experience the finest premium Myanmar food & grocery products delivered to your doorstep
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/shop"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:shadow-soft-lg hover:scale-105 transition-all"
-            >
-              Shop Now
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="/about"
-              className="inline-flex items-center justify-center gap-2 border-2 border-primary text-primary px-8 py-4 rounded-lg font-semibold hover:bg-primary/5 transition-all"
-            >
-              Learn More
-            </Link>
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.image,
+    })
+  }
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-dark-bg">
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-background dark:from-primary/10 dark:via-secondary/10 dark:to-dark-bg" />
+
+        {/* Decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left content */}
+            <div className="space-y-8 animate-fade-in">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-secondary/10 px-4 py-2 rounded-full border border-secondary/20">
+                <Zap className="w-4 h-4 text-secondary" />
+                <span className="text-sm font-semibold text-primary">Premium Myanmar Products</span>
+              </div>
+
+              {/* Main heading */}
+              <div className="space-y-4">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                  <span className="text-gray-900 dark:text-white block">Authentic</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary block">
+                    Myanmar Flavors
+                  </span>
+                  <span className="text-gray-900 dark:text-white block">in Malaysia</span>
+                </h1>
+              </div>
+
+              {/* Description */}
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl leading-relaxed">
+                Experience the finest premium Myanmar food & grocery products delivered to your doorstep. Sourced directly from Myanmar, carefully selected for quality and authenticity.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-soft-lg hover:scale-105 transition-all duration-300 group"
+                >
+                  Shop Now
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/categories"
+                  className="inline-flex items-center justify-center gap-2 border-2 border-primary text-primary px-8 py-4 rounded-xl font-semibold hover:bg-primary/5 transition-all duration-300 dark:text-secondary dark:border-secondary dark:hover:bg-secondary/5"
+                >
+                  Browse Categories
+                </Link>
+              </div>
+
+              {/* Trust indicators */}
+              <div className="flex gap-8 pt-8">
+                <div>
+                  <p className="text-3xl font-bold text-primary">10K+</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Happy Customers</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-primary">500+</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Products</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Image */}
+            <div className="relative h-96 md:h-[500px] hidden lg:block">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl" />
+              <Image
+                src="https://images.unsplash.com/photo-1555939594-58d7cb561341?w=600&h=600&fit=crop"
+                alt="Myanmar Products"
+                fill
+                className="w-full h-full object-cover rounded-3xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Feature Highlights */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-dark-bg/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {FEATURE_HIGHLIGHTS.map((feature, index) => {
+              const Icon = feature.icon
+              return (
+                <div
+                  key={index}
+                  className="group p-8 bg-white dark:bg-dark-card rounded-2xl shadow-soft hover:shadow-soft-lg transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center mb-4 group-hover:from-primary/40 group-hover:to-secondary/40 transition-all">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    {feature.description}
+                  </p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -41,22 +295,26 @@ export default function HomePage() {
       {/* Featured Categories */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold mb-12 text-center">
-            Featured Categories
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {['Spices', 'Snacks', 'Beverages'].map((category) => (
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+              Shop by Category
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Explore our curated collection of authentic Myanmar products
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FEATURED_CATEGORIES.map((category) => (
               <Link
-                key={category}
-                href={`/categories/${category.toLowerCase()}`}
-                className="group relative h-64 rounded-lg overflow-hidden shadow-soft hover:shadow-soft-lg transition-all"
+                key={category.id}
+                href={`/categories/${category.name.toLowerCase()}`}
+                className={`group relative h-48 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-300 hover:scale-105`}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 group-hover:from-primary/30 group-hover:to-secondary/30 transition-all" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <Sparkles className="w-12 h-12 text-primary mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-gray-900">{category}</h3>
-                  </div>
+                <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-80 group-hover:opacity-90 transition-opacity`} />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                  <span className="text-6xl">{category.icon}</span>
+                  <h3 className="text-2xl font-bold text-white text-center">{category.name}</h3>
                 </div>
               </Link>
             ))}
@@ -64,25 +322,133 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-primary text-white py-16 px-4 sm:px-6 lg:px-8">
+      {/* Flash Sale / Featured Products */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-16">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-900 dark:text-white">
+                Featured Products
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">Limited time offers on bestselling items</p>
+            </div>
+            <Link
+              href="/shop"
+              className="hidden md:inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold transition-colors mt-4 md:mt-0"
+            >
+              View All
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FEATURED_PRODUCTS.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+
+          <div className="mt-12 flex justify-center md:hidden">
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:shadow-soft-lg transition-all"
+            >
+              View All Products
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer Reviews Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+              Loved by Our Customers
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              See what people are saying about SHAH Myanmar Store
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: 'Aung San',
+                location: 'Kuala Lumpur',
+                rating: 5,
+                comment: 'Authentic taste of home! The quality is exceptional and delivery is fast.',
+              },
+              {
+                name: 'Ma Moe',
+                location: 'Selangor',
+                rating: 5,
+                comment: 'Fast delivery and fresh products. Highly recommended to all Myanmar friends!',
+              },
+              {
+                name: 'Thein Aung',
+                location: 'Penang',
+                rating: 5,
+                comment: 'Best Myanmar grocery store in Malaysia. Keep it up!',
+              },
+            ].map((review, index) => (
+              <div
+                key={index}
+                className="p-8 bg-white dark:bg-dark-card rounded-2xl shadow-soft hover:shadow-soft-lg transition-all duration-300"
+              >
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: review.rating }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 mb-4 italic">
+                  "{review.comment}"
+                </p>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {review.name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {review.location}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary to-primary/80 dark:from-primary dark:to-primary/60">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Subscribe to Our Newsletter
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Stay Updated with Our Latest Offers
           </h2>
-          <p className="text-lg mb-8 opacity-90">
-            Get exclusive offers and new product updates delivered to your inbox
+          <p className="text-lg text-white/90 mb-8">
+            Subscribe to our newsletter for exclusive deals and new product updates
           </p>
+
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900"
+              className="flex-1 px-6 py-4 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 dark:focus:ring-offset-dark-bg"
             />
-            <button className="bg-secondary text-primary px-6 py-3 rounded-lg font-semibold hover:shadow-soft-lg transition-all">
+            <button className="bg-secondary text-primary px-8 py-4 rounded-xl font-semibold hover:shadow-soft-lg hover:scale-105 transition-all duration-300 whitespace-nowrap">
               Subscribe
             </button>
           </div>
+
+          <p className="text-sm text-white/70 mt-4">
+            We respect your privacy. Unsubscribe at any time.
+          </p>
         </div>
       </section>
     </div>
